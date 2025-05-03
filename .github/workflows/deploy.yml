@@ -3,26 +3,31 @@ name: Deploy DevOps Site
 on:
   push:
     branches: [ main ]
-  schedule:
-    - cron: '0 0 * * *'  # Mise à jour quotidienne
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:  # <-- Ajoutez cette section cruciale
+      contents: write
+      pages: write
+      id-token: write
+      
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          fetch-depth: 0  # Important pour les historiques complets
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
-      - name: Generate HTML
+
+      - name: Generate files
         run: |
           python generate_site.py
-          curl -L https://github.com/favicon.ico -o favicon.ico
-      
-      - name: Deploy to GitHub Pages
+          curl -L https://favicon.ico -o favicon.ico
+
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

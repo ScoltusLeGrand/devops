@@ -1,0 +1,24 @@
+name: Deploy to GitHub Pages
+on: [push]  # Se déclenche à chaque push
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Étape 1 : Récupère le code
+      - uses: actions/checkout@v4
+
+      # Étape 2 : Valide le HTML (optionnel)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+      - name: Install HTMLHint
+        run: npm install -g htmlhint
+      - name: Check HTML
+        run: htmlhint index.html
+
+      # Étape 3 : Déploie sur GitHub Pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Token automatique
+          publish_dir: ./  # Dossier à déployer

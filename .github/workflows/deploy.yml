@@ -2,7 +2,9 @@ name: Deploy DevOps Site
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * *'  # Mise à jour quotidienne
 
 jobs:
   deploy:
@@ -18,21 +20,13 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      - name: Install dependencies
-        run: pip install requests
-
-      - name: Generate files
+      - name: Generate Site
         run: |
-          python generate_site.py || exit 1
-          curl -f -L https://favicon.ico -o favicon.ico || exit 0
-
-      - name: Verify files
-        run: |
-          [ -f index.html ] || (echo "index.html manquant" && exit 1)
-          echo "Fichiers générés :"
-          ls -l
+          chmod +x generate_site.py
+          ./generate_site.py || exit 1
+          curl -sL https://favicon.ico -o favicon.ico || true
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

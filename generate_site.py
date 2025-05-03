@@ -11,7 +11,7 @@ from pathlib import Path
 SITE_CONFIG = {
     "title": "Projet DevOps",
     "main_color": "#E67E22",
-    "author": "Votre Nom",
+    "author": "Bernard Thibaut",
     "refresh_interval": 3600  # 1 heure
 }
 
